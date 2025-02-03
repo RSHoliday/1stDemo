@@ -23,17 +23,25 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Tooltip("Additional gravitation pull.")]
     private float _extraGravity = 40;
 
-    [SerializeField, Tooltip("The bullet projectile prefab to fire.")]
+    [SerializeField, Tooltip("Are we on the ground?")]
+    private bool _isGrounded = false;
+
+    [SerializeField, Tooltip("The player's main collision shape.")]
+    Collider _myCollider = null;
+
+    //public bool _canReceiveInput = true;
+
+    [SerializeField, Tooltip("The bullet projectile to fire.")]
     private GameObject _bulletToSpawn;
 
-    [Tooltip("The direction that the Player is facing.")]
-    Vector3 _curFacing = Vector3.zero;
+    Vector3 _curFacing = new Vector3(1, 0, 0);
 
 
     // Start is called before the first frame update
     void Start()
     {
         _rigidBody = GetComponent<Rigidbody>();
+        _myCollider = GetComponent<Collider>();
     }
 
     // Update is called once per frame
@@ -47,40 +55,38 @@ public class PlayerController : MonoBehaviour
         // if so, adjust the speed of the player
         // also store the facing based on the keys being pressed
         if (Input.GetKey(KeyCode.RightArrow))
+        {
             curSpeed.x += (_movementAcceleration * Time.deltaTime);
+            _curFacing.x = 1;
+            _curFacing.z = 0;
+        }
 
         if (Input.GetKey(KeyCode.LeftArrow))
+        {
             curSpeed.x -= (_movementAcceleration * Time.deltaTime);
+            _curFacing.x = -1;
+            _curFacing.z = 0;
+        }
 
         if (Input.GetKey(KeyCode.UpArrow))
+        {
             curSpeed.z += (_movementAcceleration * Time.deltaTime);
+            _curFacing.z = 1;
+            _curFacing.x = 0;
+
+        }
 
         if (Input.GetKey(KeyCode.DownArrow))
+        {
             curSpeed.z -= (_movementAcceleration * Time.deltaTime);
-
-        // store the current facing
-        // do this after speed is adjusted by arrow keys
-        // be before friction is applied
-        if (curSpeed.x != 0 && curSpeed.z != 0)
-            _curFacing = curSpeed.normalized;
-
+            _curFacing.z = -1;
+            _curFacing.x = 0;
+        }
 
         // if both left and right keys are depressed or pressed, apply friction
         if (Input.GetKey(KeyCode.LeftArrow) == Input.GetKey(KeyCode.RightArrow))
         {
             curSpeed.x -= (_movementFriction * curSpeed.x);
-        }
-
-        // fire the weapon?
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            GameObject newBullet = Instantiate(_bulletToSpawn,
-                                               transform.position,
-                                               Quaternion.identity);
-
-            Bullet bullet = newBullet.GetComponent<Bullet>();
-            if (bullet)
-                bullet.SetDirection(new Vector3(_curFacing.x, 0f, _curFacing.z));
         }
 
         // if both up and down keys are depressed or pressed, apply friction
@@ -90,10 +96,24 @@ public class PlayerController : MonoBehaviour
         }
 
         // does the player want to jump?
-        if (Input.GetKeyDown(KeyCode.Space) && Mathf.Abs(curSpeed.y) < 1)
+        //if ( Input.GetKeyDown(KeyCode.Space) && Mathf.Abs( curSpeed.y ) < 1 )
+        if (Input.GetKeyDown(KeyCode.Space) && CalcIsGrounded())
             curSpeed.y += _jumpVelocity;
         else
             curSpeed.y -= _extraGravity * Time.deltaTime;
+
+        // fire the weapon?
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            GameObject newBullet = Instantiate(_bulletToSpawn, transform.position, Quaternion.identity);
+            Bullet bullet = newBullet.GetComponent<Bullet>();
+            if (bullet)
+            {
+
+                bullet.SetDirection(new Vector3(_curFacing.x, 0f, _curFacing.z));
+            }
+        }
+
 
         // apply the max speed
         curSpeed.x = Mathf.Clamp(curSpeed.x, _movementVelocityMax * -1, _movementVelocityMax);
@@ -106,13 +126,31 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        Debug.Log("Collided with a trigger");
         // did we collide with a PickupItem?
         if (collider.gameObject.GetComponent<PickUpItem>())
         {
-            PickUpItem item = collider.gameObject.GetComponent<PickUpItem>();
-            item.onPickedUp(this.gameObject);
+            // get component returned a valid PickupItem
+            // so let that item know it was grabbed by this gameObject
+            PickUpItem collisionItem = collider.gameObject.GetComponent<PickUpItem>();
+            collisionItem.onPickedUp(this.gameObject);
         }
+    }
+
+    /// <summary>
+    /// Check below the player object. 
+    /// If they're standing on a solid object, they can Jump 
+    /// and perform other actions not available in mid-air.
+    /// </summary>
+    bool CalcIsGrounded()
+    {
+        float offset = 0.1f;
+
+        Vector3 pos = _myCollider.bounds.center;
+        pos.y = _myCollider.bounds.min.y - offset;
+
+        _isGrounded = Physics.CheckSphere(pos, offset);
+
+        return _isGrounded;
     }
 
 }

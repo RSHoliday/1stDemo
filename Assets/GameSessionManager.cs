@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameSessionManager : MonoBehaviour
 {
 
-    [SerializeField, Tooltip("Remaining player lives.")]
+    [Tooltip("Remaining player lives.")]
     private int _playerLives = 3;
 
     [SerializeField, Tooltip("Where the player will re-spawn.")]
