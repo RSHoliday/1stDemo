@@ -108,6 +108,8 @@ GameObject:
   - component: {fileID: 720409899840197721}
   - component: {fileID: 720409899840197720}
   - component: {fileID: 720409899840197722}
+  - component: {fileID: 1748702099}
+  - component: {fileID: 1748702103}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -161,7 +163,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthChange: -5
   _applyToTarget: 0
-  _destroyOnCollision: 0
+  _knockbackForce: 0
+  _destroyOnCollision: 1
+--- !u!114 &1748702099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720409899840197703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f760d466104818945a29b6adc3f70d42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1748702103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720409899840197703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c32b583d9fbb43a4a8c8c5e6d6c62c4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainExplosionChunk: {fileID: 6038121794519202657, guid: cee8e2be7d6f70244bc743ec3a2227c0, type: 3}
+  _secondaryExplosionChunk: {fileID: 9124382645412816867, guid: de1975331faa9814b9d5beaaf969df67, type: 3}
+  _minChunks: 10
+  _maxChunks: 25
+  _explosionForce: 1000
 --- !u!1 &720409900271979960
 GameObject:
   m_ObjectHideFlags: 0
