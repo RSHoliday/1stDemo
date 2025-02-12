@@ -13,6 +13,8 @@ public class CameraShake : MonoBehaviour
 
     Vector3 _startPos;
 
+    Vector3 _curPlayerPos;
+
 
     private void Start()
     {

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6038121794519202656}
   - component: {fileID: 3975929344578298266}
   m_Layer: 0
-  m_Name: BlueChunk
+  m_Name: GreenChunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 95e16df0aec30194e921dad50e5bf10a, type: 2}
+  - {fileID: 2100000, guid: 1cdca8de8ea388447833e95399e3ee86, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
